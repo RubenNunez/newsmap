@@ -1,4 +1,5 @@
-export function NewsGlobe(){
+import Globe from 'react-globe.gl';
 
-    return <div>Globe</div>
+export function NewsGlobe() {
+    return <Globe pointsData={[]} />
 }
