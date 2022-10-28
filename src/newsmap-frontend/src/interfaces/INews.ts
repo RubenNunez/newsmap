@@ -1,4 +1,4 @@
-export interface News {
+export interface INews {
     title: string,
     author: string,
     published_date: string,

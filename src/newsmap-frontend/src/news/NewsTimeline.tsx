@@ -1,14 +1,14 @@
-import { News } from "../interfaces/news";
+import { INews } from "../interfaces/INews";
 import './NewsTimline.css'
 
 import newsdata from "./newsdata.json";
 
 export function NewsTimeline(){
 
-    let data : News[] = newsdata;
+    let data : INews[] = newsdata;
 
     let elements = data.map((news) => {
-        return <div className="scroll-item">
+        return <div key={news._id} className="scroll-item">
             <p className="truncate">{news.title}</p>
             <p className="truncate">{news.title}</p>
         </div>;
