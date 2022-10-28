@@ -1,0 +1,44 @@
+.scroll-container {
+    display: flex;
+    height: 568px;
+    scroll-snap-type: x mandatory;
+    overflow-x: auto;
+    white-space: nowrap;
+    position: relative;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .scroll-container::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .scroll-item {
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    scroll-behavior: smooth;
+    scroll-snap-align: center;
+    
+  }
+
+  div.scroll-item {
+    display: flex;
+    width: 25em;
+    height: 10em;
+    border: 1px solid black;
+    align-items: flex-start;
+    
+    font-family: 'Inria Serif';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 1em;
+    
+  }
+
+  .truncate {
+    width: 25em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
