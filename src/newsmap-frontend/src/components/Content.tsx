@@ -6,8 +6,9 @@ export function Content(){
     return(
         <div>
             <h1>Newsmap</h1>
-            <NewsGlobe/>
+            
             <NewsTimeline/>
+            <NewsGlobe/>
         </div>
 
     )
