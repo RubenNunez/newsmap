@@ -41,35 +41,34 @@ function getLabelSize(newsCountry: INewsCountry) {
 
 export function NewsGlobe(props: INewsGlobeProps) {
 
-  // draw line from country to mouse
-  let drawCustomLine = (country: ICountry,  ) => {
+  // draw line from country to mouse in screenspace
+  let drawCustomLine = (globeElement: any, pos : {x:number,y:number}, country?: ICountry) : any  => {
+    if(!country) return;
+
      // draw custom line
      let scene = globeElement.current?.scene() as Scene;
      let renderer = globeElement.current?.renderer() as THREE.WebGLRenderer;
      let camera = globeElement.current?.camera() as THREE.PerspectiveCamera;
 
-     // let countryThreeCoords = globeElement.current?.getCoords(country?.latlng[0], country?.latlng[1]) as THREE.Vector3;
+     let countryThreeCoords = globeElement.current?.getCoords(country?.latlng?.[0], country?.latlng?.[1]) as THREE.Vector3;
+
+     let mouseWorldPosition = new THREE.Vector3();
+     mouseWorldPosition.set((pos.x / window.innerWidth) * 2 - 1, -(pos.y / window.innerHeight) * 2 + 1,0);
+     mouseWorldPosition.unproject(camera);
 
      //create a blue LineBasicMaterial
      const material = new THREE.LineBasicMaterial( { color: 0x000000 } );
      const points = [];
-     points.push( new THREE.Vector3( 0, 0, 0 ) );
-     //points.push( countryThreeCoords);
+     points.push( countryThreeCoords );
+     points.push( mouseWorldPosition );
      
 
      const geometry = new THREE.BufferGeometry().setFromPoints( points );
      const line = new THREE.Line( geometry, material );
      
      scene.add( line );
-     renderer.render( scene, camera );
-
+     //renderer.render( scene, camera );
   }
-
-
-
-
-
-
 
 
   let groupedNews = useMemo(() => {
@@ -96,11 +95,9 @@ export function NewsGlobe(props: INewsGlobeProps) {
           (c) => c.key.toUpperCase() === country.cca2.toUpperCase()
         ) as INewsCountry
       );
-      console.log(size);
       let min = 0.5;
       let max = 4;
       let attitude = (((size-1) / 10))  * (max- min) + min;
-      console.log(attitude);
       return attitude;
     },
     [groupedNews]
@@ -127,6 +124,8 @@ export function NewsGlobe(props: INewsGlobeProps) {
           1000
         );
         
+        drawCustomLine(globeElement, {x:250,y:250}, country);
+
       }
 
     }
