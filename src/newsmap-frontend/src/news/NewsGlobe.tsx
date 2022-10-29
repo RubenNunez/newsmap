@@ -5,6 +5,7 @@ import { INews } from "../interfaces/INews";
 import * as THREE from 'three';
 
 import "./NewsGlobe.css";
+import { Scene } from "three";
 
 export interface INewsGlobeProps {
   news: INews[];
@@ -75,6 +76,25 @@ export function NewsGlobe(props: INewsGlobeProps) {
       }
     }
 
+    let scene = globeElement.current?.scene() as Scene;
+    let renderer = globeElement.current?.renderer() as THREE.WebGLRenderer;
+    let camera = globeElement.current?.camera() as THREE.PerspectiveCamera;
+    
+    
+    //create a blue LineBasicMaterial
+    const material = new THREE.LineBasicMaterial( { color: 0x000000 } );
+    const points = [];
+    points.push( new THREE.Vector3( - 200, 0, 0 ) );
+    points.push( new THREE.Vector3( 0, 200, 0 ) );
+    points.push( new THREE.Vector3( 200, 0, 0 ) );
+    points.push( new THREE.Vector3( - 200, 0, 0 ) );
+
+    const geometry = new THREE.BufferGeometry().setFromPoints( points );
+    const line = new THREE.Line( geometry, material );
+    
+    scene.add( line );
+    renderer.render( scene, camera );
+
   }, [props.hoveredNews, props.countries, props.news]);
 
   useEffect(() => {
@@ -105,7 +125,7 @@ export function NewsGlobe(props: INewsGlobeProps) {
     } else {
       // default
       return "rgba(28, 28, 28, " + opacity + ")";
-    }
+    } 
   };
 
   const [countries, setCountries] = useState({ features: []});
