@@ -3,11 +3,8 @@ import Globe from "react-globe.gl";
 import { ICountry } from "../interfaces/ICountry";
 import { INews } from "../interfaces/INews";
 import * as THREE from "three";
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 import "./NewsGlobe.css";
-import { Camera, Scene } from "three";
-import { off } from "process";
 
 export interface INewsGlobeProps {
   news: INews[];
@@ -23,9 +20,6 @@ interface INewsCountry {
   news: INews[];
 }
 
-export interface IHash {
-  [details: string] : boolean;
-}
 
 function groupBy<T>(array: T[], keySelector: (item: T) => string) {
   return array.reduce((result: { [key: string]: T[] }, currentValue) => {
@@ -52,8 +46,8 @@ export function NewsGlobe(props: INewsGlobeProps) {
     if(!country) return;
 
      // draw custom line
-     let scene = globeElement.current?.scene() as Scene;
-     let renderer = globeElement.current?.renderer() as THREE.WebGLRenderer;
+     let scene = globeElement.current?.scene() as THREE.Scene;
+     //let renderer = globeElement.current?.renderer() as THREE.WebGLRenderer;
      let camera = globeElement.current?.camera() as THREE.PerspectiveCamera;
 
      let countryThreeCoords = globeElement.current?.getCoords(country?.latlng?.[0], country?.latlng?.[1]) as THREE.Vector3;
@@ -73,7 +67,7 @@ export function NewsGlobe(props: INewsGlobeProps) {
      const line = new THREE.Line( geometry, material );
      
      scene.add( line );
-     //renderer.render( scene, camera );
+     return line;
   }
 
 
@@ -136,7 +130,7 @@ export function NewsGlobe(props: INewsGlobeProps) {
 
     }
 
-    let scene = globeElement.current?.scene() as Scene;
+    let scene = globeElement.current?.scene() as THREE.Scene;
     let renderer = globeElement.current?.renderer() as THREE.WebGLRenderer;
     let camera = globeElement.current?.camera() as THREE.PerspectiveCamera;
 
@@ -144,16 +138,16 @@ export function NewsGlobe(props: INewsGlobeProps) {
       let geoCoords = globeElement.current?.toGeoCoords(camera.position);
 
       let offset = new THREE.Vector2(0,0);
-      if (event.key == 'ArrowUp') {
+      if (event.key === 'ArrowUp') {
         offset.y += 2;
       }
-      if (event.key == 'ArrowDown') {
+      if (event.key === 'ArrowDown') {
         offset.y -= 2;
       }
-      if (event.key == 'ArrowLeft') {
+      if (event.key === 'ArrowLeft') {
         offset.x -= 2;
       } 
-      if (event.key == 'ArrowRight') {
+      if (event.key === 'ArrowRight') {
         offset.x += 2;
       }
       globeElement.current?.pointOfView(
