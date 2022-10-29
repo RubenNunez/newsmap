@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Globe from "react-globe.gl";
 import { ICountry } from "../interfaces/ICountry";
 import { INews } from "../interfaces/INews";
+import * as THREE from 'three';
 
 import "./NewsGlobe.css";
 
@@ -92,9 +93,19 @@ export function NewsGlobe(props: INewsGlobeProps) {
     } else if (props.countryFilter && props.countryFilter.cca2 === n.country?.cca2) {
       return "rgba(255, 0, 0, 0.75)";
     } else {
-      return "rgba(255, 165, 0, 0.75)";
+      return "rgba(34, 106, 91,1)";
     }
   };
+
+  const [countries, setCountries] = useState({ features: []});
+
+  useEffect(() => {
+    fetch('./data/ne_110m_admin_0_countries.geojson').then(res => res.json()).then(setCountries);
+  }, []);
+
+  const material = new THREE.MeshPhongMaterial({color: "#333333"});
+  material.opacity = 0.9;
+  material.transparent = true;
 
   return !props.news ? (
     <div></div>
@@ -103,7 +114,9 @@ export function NewsGlobe(props: INewsGlobeProps) {
       <Globe
         ref={globeElement}
         backgroundColor={"#ffffff"}
-        globeImageUrl="//unpkg.com/three-globe/example/img/earth-night.jpg"
+
+        globeMaterial={material}
+
         labelsData={fiteredNews}
         labelLat={(c: any) => {
           return c.country.latlng?.[0];
@@ -120,6 +133,14 @@ export function NewsGlobe(props: INewsGlobeProps) {
           setHoveredCountry(n?.country);
         }}
         labelResolution={10}
+        labelAltitude={0.02}
+
+
+        hexAltitude={(n: any) => 0}
+        hexPolygonsData={countries.features}
+        hexPolygonResolution={3}
+        hexPolygonMargin={0.3}
+        hexPolygonColor={() => `#000`}
       />
     </div>
   );

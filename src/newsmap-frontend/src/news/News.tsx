@@ -8,7 +8,7 @@ export function News() {
   const [countries, setCountries] = useState([] as ICountry[]);
 
   useEffect(() => {
-    fetch('./countries.json').then(res => res.json())
+    fetch('./data/countries.json').then(res => res.json())
       .then((c) => setCountries(c));
   }, []);
 
@@ -16,7 +16,7 @@ export function News() {
   const [news, setNews] = useState([] as INews[]);
 
   useEffect(() => {
-    fetch('./newsdata.json').then(res => res.json())
+    fetch('./data/newsdata.json').then(res => res.json())
       .then((n) => setNews(n));
   }, []);
 
