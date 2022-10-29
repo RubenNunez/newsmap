@@ -44,7 +44,40 @@ function getLabelSize(newsCountry: INewsCountry) {
   return size < 2 ? 2 : size;
 }
 
+
 export function NewsGlobe(props: INewsGlobeProps) {
+
+  // draw line from country to mouse
+  let drawCustomLine = (country: ICountry,  ) => {
+     // draw custom line
+     let scene = globeElement.current?.scene() as Scene;
+     let renderer = globeElement.current?.renderer() as THREE.WebGLRenderer;
+     let camera = globeElement.current?.camera() as THREE.PerspectiveCamera;
+
+     // let countryThreeCoords = globeElement.current?.getCoords(country?.latlng[0], country?.latlng[1]) as THREE.Vector3;
+
+     //create a blue LineBasicMaterial
+     const material = new THREE.LineBasicMaterial( { color: 0x000000 } );
+     const points = [];
+     points.push( new THREE.Vector3( 0, 0, 0 ) );
+     //points.push( countryThreeCoords);
+     
+
+     const geometry = new THREE.BufferGeometry().setFromPoints( points );
+     const line = new THREE.Line( geometry, material );
+     
+     scene.add( line );
+     renderer.render( scene, camera );
+
+  }
+
+
+
+
+
+
+
+
   let groupedNews = useMemo(() => {
     let g = groupBy(props.news, (item) => item.country);
     return Object.keys(g).map((key) => ({
@@ -81,12 +114,15 @@ export function NewsGlobe(props: INewsGlobeProps) {
 
   useEffect(() => {
     if (props.hoveredNews) {
+
       let countryShortName = props.news.find(
         (nw: any) => nw._id === props.hoveredNews?._id
       )?.country;
+
       let country = props.countries.find(
         (c) => c.cca2.toUpperCase() === countryShortName?.toUpperCase()
       );
+
       if (country?.latlng) {
         globeElement.current?.pointOfView(
           {
@@ -96,7 +132,9 @@ export function NewsGlobe(props: INewsGlobeProps) {
           },
           1000
         );
+        
       }
+
     }
 
     let scene = globeElement.current?.scene() as Scene;
@@ -190,7 +228,8 @@ export function NewsGlobe(props: INewsGlobeProps) {
     controls.minDistance = 140;
   }, []);
 
-  const material = new THREE.MeshPhongMaterial({color: "#b0b0b0"});
+  // globe color
+  const material = new THREE.MeshPhongMaterial({color: "#dbdbdb"});
   material.opacity = 0.9;
   material.transparent = true;
 
