@@ -5,6 +5,8 @@
     white-space: nowrap;
     position: relative;
     -webkit-overflow-scrolling: touch;
+    padding-left: 10%;
+    cursor: grab;
   }
 
   .scroll-container::-webkit-scrollbar {
@@ -12,31 +14,36 @@
   }
   
   .scroll-item {
-    margin: 10px;
-    display: flex;
-    flex-direction: column;
+    margin-right: 10px;
     scroll-behavior: smooth;
     scroll-snap-align: center;
-    
   }
 
   div.scroll-item {
-    display: flex;
     width: 25em;
     height: 10em;
     border: 1px solid black;
-    align-items: flex-start;
+    padding: 0.6em;
+  }
+
+  .headline {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+
     font-family: 'Inria Serif';
     font-style: normal;
     font-weight: 400;
-    font-size: 1em;
+    font-size: 1.3em;
+    direction: ltr;
+    width: 25rem;
+    margin: 0em;
+    white-space: pre-line; 
+
     
+    max-width: 25rem;
+    
+    overflow: hidden;
   }
 
-  .truncate {
-    width: 25em;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
 
