@@ -1,0 +1,32 @@
+.stairs-wrapper{
+    position: absolute;
+    bottom: 0rem;
+    right: 2rem;
+    z-index: 3000;
+    align-items: center;
+    justify-content: center;
+    vertical-align:middle;
+}
+
+.stairs-logo{
+    display: inline-block;
+    width: 2.5vw;
+    align-items: center;
+    justify-content: center;
+    vertical-align:middle;
+}
+
+.stairs-text{
+    transform: translate(0,-5px);
+    display: inline-block;
+    align-items: center;
+    justify-content: center;
+    vertical-align:middle;
+    margin-left: 0.75rem;
+
+    font-family: 'Kanit', sans-serif;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 1.75em;
+    color: #1b8f63;
+}
