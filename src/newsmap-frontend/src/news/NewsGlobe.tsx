@@ -3,9 +3,11 @@ import Globe from "react-globe.gl";
 import { ICountry } from "../interfaces/ICountry";
 import { INews } from "../interfaces/INews";
 import * as THREE from "three";
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 import "./NewsGlobe.css";
-import { Scene } from "three";
+import { Camera, Scene } from "three";
+import { off } from "process";
 
 export interface INewsGlobeProps {
   news: INews[];
@@ -19,6 +21,10 @@ interface INewsCountry {
   key: string;
   country: ICountry;
   news: INews[];
+}
+
+export interface IHash {
+  [details: string] : boolean;
 }
 
 function groupBy<T>(array: T[], keySelector: (item: T) => string) {
@@ -130,7 +136,51 @@ export function NewsGlobe(props: INewsGlobeProps) {
 
     }
 
+    let scene = globeElement.current?.scene() as Scene;
+    let renderer = globeElement.current?.renderer() as THREE.WebGLRenderer;
+    let camera = globeElement.current?.camera() as THREE.PerspectiveCamera;
+
+    window.addEventListener('keydown',(event : KeyboardEvent) => {
+      let geoCoords = globeElement.current?.toGeoCoords(camera.position);
+
+      let offset = new THREE.Vector2(0,0);
+      if (event.key == 'ArrowUp') {
+        offset.y += 2;
+      }
+      if (event.key == 'ArrowDown') {
+        offset.y -= 2;
+      }
+      if (event.key == 'ArrowLeft') {
+        offset.x -= 2;
+      } 
+      if (event.key == 'ArrowRight') {
+        offset.x += 2;
+      }
+      globeElement.current?.pointOfView(
+        {
+          lat: geoCoords.lat + offset.y,
+          lng: geoCoords.lng + offset.x,
+          altitude: 80,
+        },
+        geoCoords.altitude > 70 ? 0 : 20
+      );
+      //console.log(geoCoords.altitude);
+      //console.log(event.key);
+    })
+
+    //create a blue LineBasicMaterial
+    const material = new THREE.LineBasicMaterial( { color: 0x000000 } );
+    const points = [];
+    points.push( new THREE.Vector3( - 200, 0, 0 ) );
+    points.push( new THREE.Vector3( 0, 200, 0 ) );
+    points.push( new THREE.Vector3( 200, 0, 0 ) );
+    points.push( new THREE.Vector3( - 200, 0, 0 ) );
+
+    const geometry = new THREE.BufferGeometry().setFromPoints( points );
+    const line = new THREE.Line( geometry, material );
     
+    scene.add( line );
+    renderer.render( scene, camera );
 
   }, [props.hoveredNews, props.countries, props.news, getAttitude]);
 
