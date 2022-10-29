@@ -1,6 +1,6 @@
 .stairs-wrapper{
     position: absolute;
-    bottom: 2rem;
+    bottom: 0rem;
     right: 2rem;
     z-index: 3000;
     align-items: center;
@@ -10,7 +10,7 @@
 
 .stairs-logo{
     display: inline-block;
-    width: 4vw;
+    width: 2.5vw;
     align-items: center;
     justify-content: center;
     vertical-align:middle;
