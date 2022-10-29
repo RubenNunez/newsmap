@@ -20,11 +20,18 @@ export function NewsTimeline(props: INewsTimelineProps){
     let elements = filteredNews.map((news) => {
         return <div key={news._id} className="scroll-item" onMouseOver={() => props.onHover(news)} onMouseLeave={() => props.onHover(undefined)}>
                 <p className="headline">{news.title}</p>
+                <hr className="line"/>
+                <p className="subline">{news.country + " - " + news.rights + " - " + new Date(news.published_date).toLocaleString('de-CH', {
+  
+  month: 'long', // "June"
+  day: '2-digit', // "01"
+  year: 'numeric' // "2019"
+})}</p>
         </div>;
     });
-//<!-- <h1>Newsmap</h1> -->
+
     return <div className="timeline-wrapper" >
         <div ref={scrollContainer} 
-    className='scroll-container'> {elements} </div>
+    className='scroll-container'> <h1 className="title">Newsmap</h1> {elements} </div>
     </div> 
 }
