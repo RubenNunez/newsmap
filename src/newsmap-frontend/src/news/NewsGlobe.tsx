@@ -37,7 +37,7 @@ function getLabelSize(newsCountry: INewsCountry) {
   let size = 4 * Math.log10(newsCountry.news.length);
   return size < 2 ? 2 : size;
 }
-
+window.onresize = function(){ window.location.reload(); }
 
 export function NewsGlobe(props: INewsGlobeProps) {
 
