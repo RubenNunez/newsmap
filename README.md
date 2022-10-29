@@ -45,6 +45,6 @@ https://localhost:3000/
     - Hovering a news item will show it's country
     - Clicking on a news will open the source
     - Countries with more news appear bigger on the globe
-    - Filtered by english news
     - News come from a news API in the backend
     - UI is responsive
+    - Can run dockerized
