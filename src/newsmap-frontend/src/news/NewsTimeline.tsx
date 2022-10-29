@@ -44,7 +44,7 @@ export function NewsTimeline(props: INewsTimelineProps) {
 
     return <div className="timeline-wrapper" >
         <div ref={scrollContainer}
-            className='scroll-container'>
+            className='scroll-container' >
             <h1 className="title">Newsmap</h1>
             <div className="chips-container">
                 {
