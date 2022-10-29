@@ -41,36 +41,6 @@ window.onresize = function(){ window.location.reload(); }
 
 export function NewsGlobe(props: INewsGlobeProps) {
 
-  // draw line from country to mouse in screenspace
-  let drawCustomLine = (globeElement: any, pos : {x:number,y:number}, country?: ICountry) : any  => {
-    if(!country) return;
-
-     // draw custom line
-     let scene = globeElement.current?.scene() as THREE.Scene;
-     //let renderer = globeElement.current?.renderer() as THREE.WebGLRenderer;
-     let camera = globeElement.current?.camera() as THREE.PerspectiveCamera;
-
-     let countryThreeCoords = globeElement.current?.getCoords(country?.latlng?.[0], country?.latlng?.[1]) as THREE.Vector3;
-
-     let mouseWorldPosition = new THREE.Vector3();
-     mouseWorldPosition.set((pos.x / window.innerWidth) * 2 - 1, -(pos.y / window.innerHeight) * 2 + 1,0);
-     mouseWorldPosition.unproject(camera);
-
-     //create a blue LineBasicMaterial
-     const material = new THREE.LineBasicMaterial( { color: 0x000000 } );
-     const points = [];
-     points.push( countryThreeCoords );
-     points.push( mouseWorldPosition );
-     
-
-     const geometry = new THREE.BufferGeometry().setFromPoints( points );
-     const line = new THREE.Line( geometry, material );
-     
-     scene.add( line );
-     return line;
-  }
-
-
   let groupedNews = useMemo(() => {
     let g = groupBy(props.news, (item) => item.country);
     return Object.keys(g).map((key) => ({
@@ -124,14 +94,10 @@ export function NewsGlobe(props: INewsGlobeProps) {
           1000
         );
         
-        drawCustomLine(globeElement, {x:250,y:250}, country);
-
       }
 
     }
 
-    let scene = globeElement.current?.scene() as THREE.Scene;
-    let renderer = globeElement.current?.renderer() as THREE.WebGLRenderer;
     let camera = globeElement.current?.camera() as THREE.PerspectiveCamera;
 
     window.addEventListener('keydown',(event : KeyboardEvent) => {
@@ -158,23 +124,7 @@ export function NewsGlobe(props: INewsGlobeProps) {
         },
         geoCoords.altitude > 70 ? 0 : 20
       );
-      //console.log(geoCoords.altitude);
-      //console.log(event.key);
     })
-
-    //create a blue LineBasicMaterial
-    const material = new THREE.LineBasicMaterial( { color: 0x000000 } );
-    const points = [];
-    points.push( new THREE.Vector3( - 200, 0, 0 ) );
-    points.push( new THREE.Vector3( 0, 200, 0 ) );
-    points.push( new THREE.Vector3( 200, 0, 0 ) );
-    points.push( new THREE.Vector3( - 200, 0, 0 ) );
-
-    const geometry = new THREE.BufferGeometry().setFromPoints( points );
-    const line = new THREE.Line( geometry, material );
-    
-    scene.add( line );
-    renderer.render( scene, camera );
 
   }, [props.hoveredNews, props.countries, props.news, getAttitude]);
 
