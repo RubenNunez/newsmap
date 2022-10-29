@@ -4,6 +4,8 @@ import { INews } from "../interfaces/INews";
 import { NewsGlobe } from "./NewsGlobe";
 import { NewsTimeline } from "./NewsTimeline";
 
+import "./News.css";
+
 export function News() {
   const [countries, setCountries] = useState([] as ICountry[]);
 
@@ -32,6 +34,11 @@ export function News() {
         onSelectedCountry={setSelectedCountry}
         onHover={setHoveredNews} />
       <NewsGlobe countries={countries} news={news} countryFilter={selectedCountry} onCountryClick={setSelectedCountry} hoveredNews={hoveredNews} />
+      <div className="stairs-wrapper">
+        <img src="./rolltreppe.gif" alt="stairs" className="stairs-logo" ></img>
+        <p className="stairs-text">ROLLSTAIR</p>
+      </div>
+
     </>
   );
 }
