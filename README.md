@@ -44,6 +44,8 @@ https://localhost:3000/
     - Top news are shown in a list
     - Hovering a news item will show it's country
     - Clicking on a news will open the source
+    - Clicking on a country will filter the news
+    - The filter can be deleted
     - Countries with more news appear bigger on the globe
     - News come from a news API in the backend
     - UI is responsive
