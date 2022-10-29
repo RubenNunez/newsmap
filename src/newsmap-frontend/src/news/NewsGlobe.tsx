@@ -32,6 +32,11 @@ function getSize(newsCountry: INewsCountry) {
   return size < 1 ? 1 : size;
 }
 
+function getLabelSize(newsCountry: INewsCountry) {
+  let size = 4 * Math.log10(newsCountry.news.length);
+  return size < 2 ? 2 : size;
+}
+
 export function NewsGlobe(props: INewsGlobeProps) {
   let groupedNews = useMemo(() => {
     let g = groupBy(props.news, (item) => item.country);
@@ -83,17 +88,23 @@ export function NewsGlobe(props: INewsGlobeProps) {
   }, [props.countryFilter]);
 
   let getLabelColor = (n: INewsCountry) => {
+    let size = getSize(n);
+    let opacity = size > 2 ?  0.80 : 1;
     if (
       props.hoveredNews &&
       n.news.find((nw: any) => nw._id === props.hoveredNews?._id)
     ) {
-      return "rgba(255, 0, 0, 0.75)";
+      // hover over news item highlight country in map
+      return "rgba(200, 0, 0, " + opacity + ")";
     } else if (hoveredCountry && hoveredCountry.cca2 === n.country?.cca2) {
-      return "rgba(160, 0, 0, 0.75)";
+      // hover over globe highlight country in map
+      return "rgba(200, 0, 0, " + opacity + ")";
     } else if (props.countryFilter && props.countryFilter.cca2 === n.country?.cca2) {
-      return "rgba(255, 0, 0, 0.75)";
+      // filter highlight country in map
+      return "rgba(200, 0, 0, " + opacity + ")";
     } else {
-      return "rgba(34, 106, 91,1)";
+      // default
+      return "rgba(28, 28, 28, " + opacity + ")";
     }
   };
 
@@ -103,7 +114,7 @@ export function NewsGlobe(props: INewsGlobeProps) {
     fetch('./data/ne_110m_admin_0_countries.geojson').then(res => res.json()).then(setCountries);
   }, []);
 
-  const material = new THREE.MeshPhongMaterial({color: "#333333"});
+  const material = new THREE.MeshPhongMaterial({color: "#b0b0b0"});
   material.opacity = 0.9;
   material.transparent = true;
 
@@ -113,6 +124,7 @@ export function NewsGlobe(props: INewsGlobeProps) {
     <div className="globe-wrapper">
       <Globe
         ref={globeElement}
+        // background color of globe
         backgroundColor={"#ffffff"}
 
         globeMaterial={material}
@@ -123,7 +135,7 @@ export function NewsGlobe(props: INewsGlobeProps) {
         }}
         labelLng={(n: any) => n.country.latlng?.[1]}
         labelText={(n: any) => n.country.name.common}
-        labelSize={(n: any) => getSize(n)}
+        labelSize={(n: any) => getLabelSize(n)}
         labelDotRadius={(n: any) => getSize(n)}
         labelColor={(n: any) => getLabelColor(n)}
         onLabelClick={(n: any) => {
@@ -140,7 +152,8 @@ export function NewsGlobe(props: INewsGlobeProps) {
         hexPolygonsData={countries.features}
         hexPolygonResolution={3}
         hexPolygonMargin={0.3}
-        hexPolygonColor={() => `#000`}
+        // color of hexagons
+        hexPolygonColor={() => `#706f6f`}
       />
     </div>
   );
