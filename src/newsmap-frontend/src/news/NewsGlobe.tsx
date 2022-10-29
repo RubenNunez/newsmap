@@ -112,6 +112,9 @@ export function NewsGlobe(props: INewsGlobeProps) {
 
   useEffect(() => {
     fetch('./data/ne_110m_admin_0_countries.geojson').then(res => res.json()).then(setCountries);
+    const controls = globeElement.current.controls();
+    controls.maxDistance = 370;
+    controls.minDistance = 140;
   }, []);
 
   const material = new THREE.MeshPhongMaterial({color: "#b0b0b0"});

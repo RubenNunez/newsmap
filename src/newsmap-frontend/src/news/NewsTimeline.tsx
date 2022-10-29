@@ -23,14 +23,22 @@ export function NewsTimeline(props: INewsTimelineProps) {
         props.onSelectedCountry(undefined);
     };
 
+    const openInNewTab = (url: string) => {
+        window.open(url, '_blank', 'noopener,noreferrer');
+    };
+
     useEffect(() => {
-        if (!props.countryFilter){
-            scrollContainer.current?.scrollTo(0, 0);            
+        if (!props.countryFilter) {
+            scrollContainer.current?.scrollTo(0, 0);
         }
     }, [props.countryFilter]);
 
     let elements = filteredNews.map((news) => {
-        return <div key={news._id} className="scroll-item" onMouseOver={() => props.onHover(news)} onMouseLeave={() => props.onHover(undefined)}>
+        return <div key={news._id}
+            className="scroll-item"
+            onMouseOver={() => props.onHover(news)}
+            onMouseLeave={() => props.onHover(undefined)}
+            onClick={ ()=> openInNewTab(news.link) }>
             <p className="headline">{news.title}</p>
             <hr className="line" />
             <p className="subline">{news.country + " - " + news.rights + " - " + new Date(news.published_date).toLocaleString('de-CH', {
@@ -48,7 +56,7 @@ export function NewsTimeline(props: INewsTimelineProps) {
             <h1 className="title">Newsmap</h1>
             <div className="chips-container">
                 {
-                    props.countryFilter ?  <div className="chips" onClick={()=>onCountryFilterClear()}>{props.countryFilter.name.common} 🗑</div> : <></>
+                    props.countryFilter ? <div className="chips" onClick={() => onCountryFilterClear()}>{props.countryFilter.name.common} 🗑</div> : <></>
                 }
             </div>
             {elements}
