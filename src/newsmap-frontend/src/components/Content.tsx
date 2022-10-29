@@ -7,7 +7,6 @@ export function Content(){
         <div>
             <News />
         </div>
-
     )
 
 }

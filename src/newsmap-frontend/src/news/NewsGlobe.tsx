@@ -3,6 +3,9 @@ import Globe from "react-globe.gl";
 import { ICountry } from "../interfaces/ICountry";
 import { INews } from "../interfaces/INews";
 
+
+import './NewsGlobe.css'
+
 export interface INewsGlobeProps {
   news: INews[];
   countries: ICountry[];
@@ -41,6 +44,7 @@ export function NewsGlobe(props: INewsGlobeProps) {
   return !props.news ? (
     <div></div>
   ) : (
+    <div className="globe-wrapper">
     <Globe
       backgroundColor={"#ffffff"}
       globeImageUrl="//unpkg.com/three-globe/example/img/earth-night.jpg"
@@ -58,5 +62,6 @@ export function NewsGlobe(props: INewsGlobeProps) {
       }}
       labelResolution={10}
     />
+    </div>
   );
 }

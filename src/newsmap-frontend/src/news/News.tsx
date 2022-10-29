@@ -26,7 +26,6 @@ export function News() {
   
   return (
     <>
-      <h1 style={{paddingLeft: '10%', paddingTop: '10%'}}>Newsmap</h1>
       <NewsTimeline countries={countries} news={news} countryFilter={selectedCountry} onHover={setHoveredNews}/>
       <NewsGlobe countries={countries} news={news} onCountryClick={setSelectedCountry} hoveredNews={hoveredNews}/>
     </>
