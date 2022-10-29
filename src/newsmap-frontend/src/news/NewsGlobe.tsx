@@ -154,7 +154,7 @@ export function NewsGlobe(props: INewsGlobeProps) {
         {
           lat: geoCoords.lat + offset.y,
           lng: geoCoords.lng + offset.x,
-          altitude: 80,
+          altitude: geoCoords.altitude,
         },
         geoCoords.altitude > 70 ? 0 : 20
       );
