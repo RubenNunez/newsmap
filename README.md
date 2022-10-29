@@ -37,3 +37,14 @@ docker run -dp 3000:80 newsmap
 ```bash
 https://localhost:3000/
 ```
+    
+## Features ✨
+    - Globe (Can be rotated with mouse or arrow keys)
+    - News are categorized by country
+    - Top news are shown in a list
+    - Hovering a news item will show it's country
+    - Clicking on a news will open the source
+    - Countries with more news appear bigger on the globe
+    - Filtered by english news
+    - News come from a news API in the backend
+    - UI is responsive
