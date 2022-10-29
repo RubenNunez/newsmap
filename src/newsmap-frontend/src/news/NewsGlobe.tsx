@@ -1,47 +1,62 @@
+import { useMemo } from "react";
 import Globe from "react-globe.gl";
-import contriesData from "../data/countries.json";
 import { ICountry } from "../interfaces/ICountry";
+import { INews } from "../interfaces/INews";
 
-export function NewsGlobe() {
-  const markerSvg = `<svg viewBox="-4 0 36 36">
-    <path fill="currentColor" d="M14,0 C21.732,0 28,5.641 28,12.6 C28,23.963 14,36 14,36 C14,36 0,24.064 0,12.6 C0,5.641 6.268,0 14,0 Z"></path>
-    <circle fill="black" cx="14" cy="14" r="7"></circle>
-  </svg>`;
+export interface INewsGlobeProps {
+  news: INews[];
+  countries: ICountry[];
+  onCountryClick: (country: ICountry) => void;
+  hoveredNews: INews | undefined;
+}
 
-  const countries: ICountry[] = contriesData;
+interface INewsCountry{
+  key: string;
+  country: ICountry;
+  news: INews[];
+}
 
-  const gData = countries
-    .map((c) =>
-      c.latlng
-        ? {
-            lat: c.capitalInfo?.latlng?.[0],
-            lng: c.capitalInfo?.latlng?.[1],
-            size: 7 + Math.random() * 30,
-            color: ["red", "white", "blue", "green"][
-              Math.round(Math.random() * 3)
-            ],
-            country: c,
-          }
-        : {}
-    )
-    .filter((c) => c.lat);
+function groupBy<T>(array: T[], keySelector: (item: T) => string) {
+  return array.reduce((result: { [key: string]: T[] }, currentValue) => {
+    (result[keySelector(currentValue)] =
+      result[keySelector(currentValue)] || ([] as T[])).push(currentValue);
+    return result;
+  }, {});
+}
+function getSize(newsCountry: INewsCountry) {
+  let size = 4 * Math.log10(newsCountry.news.length);
+  return size < 1 ? 1 : size;
+}
 
-  return (
+export function NewsGlobe(props: INewsGlobeProps) {
+  let groupedNews = useMemo(() => {
+    let g = groupBy(props.news, (item) => item.country);
+    return Object.keys(g).map((key) => ({ key: key, news: g[key], country: props.countries.find((c) => c.cca2.toUpperCase() === key.toUpperCase()) }));
+  }, [props.news,props.countries]);
+
+  let fiteredNews = useMemo(() => {
+    return groupedNews;
+  }, [groupedNews]);
+
+  return !props.news ? (
+    <div></div>
+  ) : (
     <Globe
-      htmlElement={(d: any) => {
-        const el = document.createElement("div");
-        el.innerHTML = markerSvg;
-        el.style.color = d.color;
-        el.style.width = `${d.size}px`;
-
-        el.style.pointerEvents = "auto";
-        el.style.cursor = "pointer";
-        el.onclick = () => console.info(d);
-        return el;
-      }}
-      htmlElementsData={gData}
       backgroundColor={"#ffffff"}
-      globeImageUrl="//unpkg.com/three-globe/example/img/earth-dark.jpg"
+      globeImageUrl="//unpkg.com/three-globe/example/img/earth-night.jpg"
+      labelsData={fiteredNews}
+      labelLat={(c: any) => {
+        return c.country.latlng?.[0];
+      }}
+      labelLng={(n: any) => n.country.latlng?.[1]}
+      labelText={(n: any) => n.country.name.common}
+      labelSize={(n: any) =>  getSize(n)}
+      labelDotRadius={(n: any) => getSize(n)}
+      labelColor={() => "rgba(255, 165, 0, 0.75)"}
+      onLabelClick={(n: any) => {
+        props.onCountryClick(n.country);
+      }}
+      labelResolution={10}
     />
   );
 }

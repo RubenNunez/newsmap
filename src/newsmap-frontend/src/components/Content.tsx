@@ -1,14 +1,11 @@
-import { NewsGlobe } from "../news/NewsGlobe";
-import { NewsTimeline } from "../news/NewsTimeline";
+import { News } from "../news/News";
 
 
 export function Content(){
 
     return(
         <div>
-            <h1 style={{paddingLeft: '10%', paddingTop: '10%'}}>Newsmap</h1>
-            <NewsTimeline/>
-            <NewsGlobe/>
+            <News />
         </div>
 
     )

@@ -1,14 +1,17 @@
 import { INews } from "../interfaces/INews";
 import './NewsTimline.css'
 
-import newsdata from "./newsdata.json";
 import { useRef } from "react";
+import { ICountry } from "../interfaces/ICountry";
 
+export interface INewsTimelineProps {
+    news: INews[];
+    countries: ICountry[];
+    countryFilter: ICountry | undefined;
+    onHover: (news: INews) => void;
+  }
 
-
-export function NewsTimeline(){
-
-    let data : INews[] = newsdata;
+export function NewsTimeline(props: INewsTimelineProps){
     
     let pos = useRef({top: 0, left: 0, x: 0, y: 0, beenDragged: false});
     let scrollContainer = useRef<HTMLDivElement>(null);
@@ -60,7 +63,7 @@ export function NewsTimeline(){
 
     
 
-    let elements = data.map((news) => {
+    let elements = props.news.map((news) => {
         return <div key={news._id} className="scroll-item">
                 <p className="headline">{news.title}</p>
         </div>;
