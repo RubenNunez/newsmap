@@ -57,7 +57,7 @@ export function NewsGlobe(props: INewsGlobeProps) {
 
     }
 
-  }, [props.hoveredNews]);
+  }, [props.hoveredNews, props.countries, props.news]);
 
   return !props.news ? (
     <div></div>
