@@ -1,4 +1,5 @@
 .stairs-wrapper{
+    cursor: pointer;
     position: absolute;
     bottom: 0rem;
     right: 2rem;

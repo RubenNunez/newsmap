@@ -25,6 +25,9 @@ export function News() {
   const [selectedCountry, setSelectedCountry] = useState(undefined as ICountry | undefined);
   const [hoveredNews, setHoveredNews] = useState(undefined as INews | undefined);
 
+  const openInNewTab = (url: string) => {
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
 
   return (
     <>
@@ -34,7 +37,7 @@ export function News() {
         onSelectedCountry={setSelectedCountry}
         onHover={setHoveredNews} />
       <NewsGlobe countries={countries} news={news} countryFilter={selectedCountry} onCountryClick={setSelectedCountry} hoveredNews={hoveredNews} />
-      <div className="stairs-wrapper">
+      <div className="stairs-wrapper" onClick={()=> openInNewTab("https://github.com/RubenNunez/newsmap") }>
         <img src="./rolltreppe.gif" alt="stairs" className="stairs-logo" ></img>
         <p className="stairs-text">ROLLSTAIR</p>
       </div>
