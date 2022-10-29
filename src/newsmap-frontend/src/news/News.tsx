@@ -27,7 +27,7 @@ export function News() {
   return (
     <>
       <NewsTimeline countries={countries} news={news} countryFilter={selectedCountry} onHover={setHoveredNews}/>
-      <NewsGlobe countries={countries} news={news} onCountryClick={setSelectedCountry} hoveredNews={hoveredNews}/>
+      <NewsGlobe countries={countries} news={news} countryFilter={selectedCountry} onCountryClick={setSelectedCountry} hoveredNews={hoveredNews}/>
     </>
   );
 }
