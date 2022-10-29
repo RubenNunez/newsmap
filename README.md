@@ -50,3 +50,21 @@ https://localhost:3000/
     - News come from a news API in the backend
     - UI is responsive
     - Can run dockerized
+
+
+## Clean Concept 📚
+
+### Desktop Light
+<img style="display: inline; vertical-align:middle;" width=550 src="assets/desktopdark.png" alt="Alt text" title="Browser 1"/>
+
+### Desktop Dark
+<img style="display: inline; vertical-align:middle;" width=550 src="assets/desktoplight.png" alt="Alt text" title="Browser 1"/>
+
+### Phone Light
+<img style="display: inline; vertical-align:middle;" width=250 src="assets/phone1.png" alt="Alt text" title="Browser 1"/>
+<img style="display: inline; vertical-align:middle;" width=250 src="assets/phone2.png" alt="Alt text" title="Browser 2"/>
+
+### Phone Dark
+<img style="display: inline; vertical-align:middle;" width=250 src="assets/phone3.png" alt="Alt text" title="Browser 1"/>
+<img style="display: inline; vertical-align:middle;" width=250 src="assets/phone4.png" alt="Alt text" title="Browser 2"/>
+
