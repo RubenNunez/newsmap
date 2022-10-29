@@ -3,7 +3,7 @@ import Globe from "react-globe.gl";
 import { ICountry } from "../interfaces/ICountry";
 import { INews } from "../interfaces/INews";
 import * as THREE from "three";
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 import "./NewsGlobe.css";
 import { Camera, Scene } from "three";
@@ -24,7 +24,7 @@ interface INewsCountry {
 }
 
 export interface IHash {
-  [details: string] : boolean;
+  [details: string]: boolean;
 }
 
 function groupBy<T>(array: T[], keySelector: (item: T) => string) {
@@ -44,38 +44,98 @@ function getLabelSize(newsCountry: INewsCountry) {
   return size < 2 ? 2 : size;
 }
 
-
 export function NewsGlobe(props: INewsGlobeProps) {
+  let mousePos = useRef({ x: 0, y: 0 });
+  let line = useRef<THREE.Line | undefined>(undefined);
+  let globeElement = useRef<any>(null);
+
+  useEffect(() => {
+    window.addEventListener("mousemove", (e) => {
+      mousePos.current.x = e.clientX;
+      mousePos.current.y = e.clientY;
+    });
+  });
+
+  useEffect(() => {
+    console.log("test");
+    if (globeElement.current && mousePos.current) {
+      console.log(mousePos.current);
+      let renderer = globeElement.current?.renderer() as THREE.WebGLRenderer;
+      let scene = globeElement.current?.scene() as Scene;
+      let camera = globeElement.current?.camera() as THREE.PerspectiveCamera;
+      renderer.setAnimationLoop(() => {
+ 
+        if (!line.current) {
+          line.current = new THREE.Line();
+          
+        }
+        console.log("test");
+
+        let mouseWorldPosition = new THREE.Vector3();
+        mouseWorldPosition.set(
+          (mousePos.current.x / window.innerWidth) * 2 - 1,
+          -(mousePos.current.y / window.innerHeight) * 2 + 1,
+          camera.position.z /2
+        );
+
+        console.log(mousePos.current)
+        console.log(mouseWorldPosition)
+        //mouseWorldPosition.set(200, 200, 200);
+
+        let zeroPoint = new THREE.Vector3();
+        zeroPoint.set(0, 0, 0);
+
+        //create a blue LineBasicMaterial
+        const material = new THREE.LineBasicMaterial({ color: 0x000000 });
+        const points = [];
+        points.push(zeroPoint);
+        points.push(mouseWorldPosition);
+
+        const geometry = new THREE.BufferGeometry().setFromPoints(points);
+        line.current = new THREE.Line(geometry, material);
+        scene.add(line.current);
+      });
+    }
+  }, []);
 
   // draw line from country to mouse in screenspace
-  let drawCustomLine = (globeElement: any, pos : {x:number,y:number}, country?: ICountry) : any  => {
-    if(!country) return;
+  let drawCustomLine = (
+    globeElement: any,
+    pos: { x: number; y: number },
+    country?: ICountry
+  ): any => {
+    if (!country) return;
 
-     // draw custom line
-     let scene = globeElement.current?.scene() as Scene;
-     let renderer = globeElement.current?.renderer() as THREE.WebGLRenderer;
-     let camera = globeElement.current?.camera() as THREE.PerspectiveCamera;
+    // draw custom line
+    let scene = globeElement.current?.scene() as Scene;
+    let renderer = globeElement.current?.renderer() as THREE.WebGLRenderer;
+    let camera = globeElement.current?.camera() as THREE.PerspectiveCamera;
 
-     let countryThreeCoords = globeElement.current?.getCoords(country?.latlng?.[0], country?.latlng?.[1]) as THREE.Vector3;
+    let countryThreeCoords = globeElement.current?.getCoords(
+      country?.latlng?.[0],
+      country?.latlng?.[1]
+    ) as THREE.Vector3;
 
-     let mouseWorldPosition = new THREE.Vector3();
-     mouseWorldPosition.set((pos.x / window.innerWidth) * 2 - 1, -(pos.y / window.innerHeight) * 2 + 1,0);
-     mouseWorldPosition.unproject(camera);
+    let mouseWorldPosition = new THREE.Vector3();
+    mouseWorldPosition.set(
+      (pos.x / window.innerWidth) * 2 - 1,
+      -(pos.y / window.innerHeight) * 2 + 1,
+      0
+    );
+    mouseWorldPosition.unproject(camera);
 
-     //create a blue LineBasicMaterial
-     const material = new THREE.LineBasicMaterial( { color: 0x000000 } );
-     const points = [];
-     points.push( countryThreeCoords );
-     points.push( mouseWorldPosition );
-     
+    //create a blue LineBasicMaterial
+    const material = new THREE.LineBasicMaterial({ color: 0x000000 });
+    const points = [];
+    points.push(countryThreeCoords);
+    points.push(mouseWorldPosition);
 
-     const geometry = new THREE.BufferGeometry().setFromPoints( points );
-     const line = new THREE.Line( geometry, material );
-     
-     scene.add( line );
-     //renderer.render( scene, camera );
-  }
+    const geometry = new THREE.BufferGeometry().setFromPoints(points);
+    const line = new THREE.Line(geometry, material);
 
+    scene.add(line);
+    //renderer.render( scene, camera );
+  };
 
   let groupedNews = useMemo(() => {
     let g = groupBy(props.news, (item) => item.country);
@@ -92,8 +152,6 @@ export function NewsGlobe(props: INewsGlobeProps) {
     undefined as ICountry | undefined
   );
 
-  let globeElement = useRef<any>(null);
-
   let getAttitude = useCallback(
     (country: ICountry) => {
       let size = getSize(
@@ -103,7 +161,7 @@ export function NewsGlobe(props: INewsGlobeProps) {
       );
       let min = 0.5;
       let max = 4;
-      let attitude = (((size-1) / 10))  * (max- min) + min;
+      let attitude = ((size - 1) / 10) * (max - min) + min;
       return attitude;
     },
     [groupedNews]
@@ -111,7 +169,6 @@ export function NewsGlobe(props: INewsGlobeProps) {
 
   useEffect(() => {
     if (props.hoveredNews) {
-
       let countryShortName = props.news.find(
         (nw: any) => nw._id === props.hoveredNews?._id
       )?.country;
@@ -129,31 +186,27 @@ export function NewsGlobe(props: INewsGlobeProps) {
           },
           1000
         );
-        
-        drawCustomLine(globeElement, {x:250,y:250}, country);
-
       }
-
     }
 
     let scene = globeElement.current?.scene() as Scene;
     let renderer = globeElement.current?.renderer() as THREE.WebGLRenderer;
     let camera = globeElement.current?.camera() as THREE.PerspectiveCamera;
 
-    window.addEventListener('keydown',(event : KeyboardEvent) => {
+    window.addEventListener("keydown", (event: KeyboardEvent) => {
       let geoCoords = globeElement.current?.toGeoCoords(camera.position);
 
-      let offset = new THREE.Vector2(0,0);
-      if (event.key == 'ArrowUp') {
+      let offset = new THREE.Vector2(0, 0);
+      if (event.key == "ArrowUp") {
         offset.y += 2;
       }
-      if (event.key == 'ArrowDown') {
+      if (event.key == "ArrowDown") {
         offset.y -= 2;
       }
-      if (event.key == 'ArrowLeft') {
+      if (event.key == "ArrowLeft") {
         offset.x -= 2;
-      } 
-      if (event.key == 'ArrowRight') {
+      }
+      if (event.key == "ArrowRight") {
         offset.x += 2;
       }
       globeElement.current?.pointOfView(
@@ -166,21 +219,8 @@ export function NewsGlobe(props: INewsGlobeProps) {
       );
       //console.log(geoCoords.altitude);
       //console.log(event.key);
-    })
+    });
 
-    //create a blue LineBasicMaterial
-    const material = new THREE.LineBasicMaterial( { color: 0x000000 } );
-    const points = [];
-    points.push( new THREE.Vector3( - 200, 0, 0 ) );
-    points.push( new THREE.Vector3( 0, 200, 0 ) );
-    points.push( new THREE.Vector3( 200, 0, 0 ) );
-    points.push( new THREE.Vector3( - 200, 0, 0 ) );
-
-    const geometry = new THREE.BufferGeometry().setFromPoints( points );
-    const line = new THREE.Line( geometry, material );
-    
-    scene.add( line );
-    renderer.render( scene, camera );
 
   }, [props.hoveredNews, props.countries, props.news, getAttitude]);
 
@@ -199,7 +239,7 @@ export function NewsGlobe(props: INewsGlobeProps) {
 
   let getLabelColor = (n: INewsCountry) => {
     let size = getSize(n);
-    let opacity = size > 2 ?  0.80 : 1;
+    let opacity = size > 2 ? 0.8 : 1;
     if (
       props.hoveredNews &&
       n.news.find((nw: any) => nw._id === props.hoveredNews?._id)
@@ -209,26 +249,31 @@ export function NewsGlobe(props: INewsGlobeProps) {
     } else if (hoveredCountry && hoveredCountry.cca2 === n.country?.cca2) {
       // hover over globe highlight country in map
       return "rgba(200, 0, 0, " + opacity + ")";
-    } else if (props.countryFilter && props.countryFilter.cca2 === n.country?.cca2) {
+    } else if (
+      props.countryFilter &&
+      props.countryFilter.cca2 === n.country?.cca2
+    ) {
       // filter highlight country in map
       return "rgba(200, 0, 0, " + opacity + ")";
     } else {
       // default
       return "rgba(28, 28, 28, " + opacity + ")";
-    } 
+    }
   };
 
   const [countries, setCountries] = useState({ features: [] });
 
   useEffect(() => {
-    fetch('./data/ne_110m_admin_0_countries.geojson').then(res => res.json()).then(setCountries);
+    fetch("./data/ne_110m_admin_0_countries.geojson")
+      .then((res) => res.json())
+      .then(setCountries);
     const controls = globeElement.current.controls();
     controls.maxDistance = 370;
     controls.minDistance = 140;
   }, []);
 
   // globe color
-  const material = new THREE.MeshPhongMaterial({color: "#dbdbdb"});
+  const material = new THREE.MeshPhongMaterial({ color: "#dbdbdb" });
   material.opacity = 0.9;
   material.transparent = true;
 
