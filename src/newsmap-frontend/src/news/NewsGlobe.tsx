@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Globe from "react-globe.gl";
 import { ICountry } from "../interfaces/ICountry";
 import { INews } from "../interfaces/INews";
-import * as THREE from 'three';
+import * as THREE from "three";
 
 import "./NewsGlobe.css";
 import { Scene } from "three";
@@ -50,27 +50,44 @@ export function NewsGlobe(props: INewsGlobeProps) {
     }));
   }, [props.news, props.countries]);
 
-  let fiteredNews = useMemo(() => {
-    return groupedNews;
-  }, [groupedNews]);
-
   let [hoveredCountry, setHoveredCountry] = useState(
     undefined as ICountry | undefined
   );
 
   let globeElement = useRef<any>(null);
 
+  let getAttitude = useCallback(
+    (country: ICountry) => {
+      let size = getSize(
+        groupedNews.find(
+          (c) => c.key.toUpperCase() === country.cca2.toUpperCase()
+        ) as INewsCountry
+      );
+      console.log(size);
+      let min = 0.5;
+      let max = 4;
+      let attitude = (((size-1) / 10))  * (max- min) + min;
+      console.log(attitude);
+      return attitude;
+    },
+    [groupedNews]
+  );
+
   useEffect(() => {
     if (props.hoveredNews) {
-      let country = props.news.find(
+      let countryShortName = props.news.find(
         (nw: any) => nw._id === props.hoveredNews?._id
       )?.country;
-      let coords = props.countries.find(
-        (c) => c.cca2.toUpperCase() === country?.toUpperCase()
-      )?.latlng;
-      if (coords) {
+      let country = props.countries.find(
+        (c) => c.cca2.toUpperCase() === countryShortName?.toUpperCase()
+      );
+      if (country?.latlng) {
         globeElement.current?.pointOfView(
-          { lat: coords[0], lng: coords[1], altitude: 2 },
+          {
+            lat: country?.latlng[0],
+            lng: country?.latlng[1],
+            altitude: getAttitude(country),
+          },
           1000
         );
       }
@@ -95,17 +112,20 @@ export function NewsGlobe(props: INewsGlobeProps) {
     scene.add( line );
     renderer.render( scene, camera );
 
-  }, [props.hoveredNews, props.countries, props.news]);
+  }, [props.hoveredNews, props.countries, props.news, getAttitude]);
 
   useEffect(() => {
     if (props.countryFilter?.latlng) {
-        globeElement.current?.pointOfView(
-          { lat: props.countryFilter.latlng[0], lng: props.countryFilter.latlng[1], altitude: 2 },
-          1000
-        );
-      
+      globeElement.current?.pointOfView(
+        {
+          lat: props.countryFilter.latlng[0],
+          lng: props.countryFilter.latlng[1],
+          altitude: getAttitude(props.countryFilter),
+        },
+        1000
+      );
     }
-  }, [props.countryFilter]);
+  }, [props.countryFilter, getAttitude]);
 
   let getLabelColor = (n: INewsCountry) => {
     let size = getSize(n);
@@ -128,7 +148,7 @@ export function NewsGlobe(props: INewsGlobeProps) {
     } 
   };
 
-  const [countries, setCountries] = useState({ features: []});
+  const [countries, setCountries] = useState({ features: [] });
 
   useEffect(() => {
     fetch('./data/ne_110m_admin_0_countries.geojson').then(res => res.json()).then(setCountries);
@@ -149,10 +169,8 @@ export function NewsGlobe(props: INewsGlobeProps) {
         ref={globeElement}
         // background color of globe
         backgroundColor={"#ffffff"}
-
         globeMaterial={material}
-
-        labelsData={fiteredNews}
+        labelsData={groupedNews}
         labelLat={(c: any) => {
           return c.country.latlng?.[0];
         }}
@@ -169,8 +187,6 @@ export function NewsGlobe(props: INewsGlobeProps) {
         }}
         labelResolution={10}
         labelAltitude={0.02}
-
-
         hexAltitude={(n: any) => 0}
         hexPolygonsData={countries.features}
         hexPolygonResolution={3}
