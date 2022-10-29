@@ -4,8 +4,10 @@ We created this App 📱 during the hackathon 🤓 hack.stair.ch 🌐 2️⃣0�
 ## Teamname 📍
 <br>
 <div style=" position: absolute;">
-    <img style="display: inline; vertical-align:middle;" height=50 src="assets/rolltreppe.gif" alt="Alt text" title="Optional title"/>
-    <h2 style="margin-left:15px; display: inline; vertical-align:middle;"> Rolltreppe (Rollstair 😜) </h2>
+    <h2 style="margin-left:15px; display: inline; vertical-align:middle;"> 
+        <img style="display: inline; vertical-align:middle;" height=50 src="assets/rolltreppe.gif" alt="Alt text" title="Optional title"/>
+        Rolltreppe (Rollstair 😜)
+    </h2>
 <div>
 
 ## Members 🏃🏼🏃🏼🏃🏼
